@@ -22,12 +22,14 @@
         }
 
         #gameTitle {
-            font-size: 32px;
+            /* S'adapte automatiquement à la largeur de l'écran pour tenir sur une ligne */
+            font-size: clamp(18px, 6.5vw, 32px); 
+            white-space: nowrap; /* Force le texte à rester sur une seule ligne */
             margin: 0 0 10px 0;
             color: #ffffff;
             text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff, 0 0 30px #ff007f;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-align: center;
         }
 
@@ -40,7 +42,6 @@
             text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
         }
 
-        /* --- LA CORRECTION EST ICI --- */
         #gameContainer {
             position: relative;
             width: 95vw;
@@ -172,8 +173,7 @@
         }
 
         @media (max-width: 400px) {
-            #gameTitle { font-size: 24px; }
-            #scoreboard { font-size: 18px; }
+            #scoreboard { font-size: 18px; gap: 20px; }
             h1.cheh-title { font-size: 32px; }
             .overlayScreen p.score-text { font-size: 16px; }
         }
@@ -357,7 +357,6 @@
             document.getElementById('gameOverScreen').style.display = "none";
             
             snake = [];
-            // Centrage ajusté à la nouvelle hauteur du canvas (Y: 640)
             for(let i=0; i<10; i++){
                 snake.push({x: 520 - (i*gridSize), y: 640});
             }
