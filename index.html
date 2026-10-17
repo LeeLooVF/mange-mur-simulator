@@ -81,7 +81,7 @@
         }
 
         h1.cheh-title {
-            font-size: 70px; /* Réduit un peu pour laisser de la place au classement */
+            font-size: 70px;
             margin: 0;
             color: #ff007f;
             text-shadow: 0 0 20px rgba(255, 0, 127, 0.8), 4px 4px 0px #300020;
@@ -120,7 +120,7 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            font-family: 'Courier New', Courier, monospace; /* Police style Arcade */
+            font-family: 'Courier New', Courier, monospace;
             font-size: 16px;
             text-align: left;
         }
@@ -210,9 +210,43 @@
         let vitesseJeu = 170; 
         let score = 0;
         
-        // --- GESTION DU TOP 10 ---
-        let top10 = JSON.parse(localStorage.getItem("snakeTop10Data")) || [];
-        updateHighScoreDisplay();
+        // --- GESTION DU TOP 10 MONDIAL (API CLOUDFLARE) ---
+        let top10 = [];
+
+        async function chargerClassement() {
+            try {
+                const reponse = await fetch('/api');
+                const data = await reponse.json();
+                if (Array.isArray(data)) {
+                    top10 = data;
+                    updateHighScoreDisplay();
+                    renderLeaderboard();
+                }
+            } catch (e) {
+                console.error("Erreur de chargement du classement :", e);
+            }
+        }
+
+        async function envoyerScore(nom, scoreFinal) {
+            try {
+                const reponse = await fetch('/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: nom, score: scoreFinal })
+                });
+                const data = await reponse.json();
+                if (Array.isArray(data)) {
+                    top10 = data;
+                    updateHighScoreDisplay();
+                    renderLeaderboard();
+                }
+            } catch (e) {
+                console.error("Erreur d'envoi du score :", e);
+            }
+        }
+
+        // Charger le classement dès le lancement de la page
+        chargerClassement();
 
         let gridSize = 40; 
         let dx = gridSize;
@@ -483,37 +517,27 @@
             
             document.getElementById("finalScore").innerText = score;
             
-            // Vérifier si le score mérite d'entrer dans le top 10
+            // Vérifier si le score entre dans le top 10 mondial
             let qualifiesForTop10 = false;
             if (score > 0) {
                 if (top10.length < 10) {
                     qualifiesForTop10 = true;
-                } else {
-                    // Compare avec le plus petit score du top 10 actuel
-                    if (score > top10[top10.length - 1].score) {
-                        qualifiesForTop10 = true;
-                    }
+                } else if (score > top10[top10.length - 1].score) {
+                    qualifiesForTop10 = true;
                 }
             }
 
-            // Affiche le petit délai d'alerte pour ne pas bloquer brutalement l'animation
             setTimeout(() => {
                 if (qualifiesForTop10) {
                     let playerName = prompt("NOUVEAU RECORD ! 🎉\nEntrez vos initiales (3 lettres) :", "AAA");
                     if (!playerName || playerName.trim() === "") playerName = "ANO";
                     playerName = playerName.substring(0, 3).toUpperCase();
 
-                    top10.push({ name: playerName, score: score });
-                    // Trie par score décroissant
-                    top10.sort((a, b) => b.score - a.score);
-                    // Garde uniquement les 10 premiers
-                    top10 = top10.slice(0, 10);
-                    
-                    localStorage.setItem("snakeTop10Data", JSON.stringify(top10));
-                    updateHighScoreDisplay();
+                    // Envoi du score à l'API Cloudflare
+                    envoyerScore(playerName, score);
+                } else {
+                    renderLeaderboard();
                 }
-
-                renderLeaderboard();
                 document.getElementById("gameOverScreen").style.display = "flex";
             }, 100);
         }
@@ -525,10 +549,10 @@
 
         function renderLeaderboard() {
             const listElement = document.getElementById("leaderboardList");
-            listElement.innerHTML = ""; // Vider la liste actuelle
+            listElement.innerHTML = ""; 
 
             if (top10.length === 0) {
-                listElement.innerHTML = "<li style='text-align:center; color:#888;'>Aucun score enregistré</li>";
+                listElement.innerHTML = "<li style='text-align:center; color:#888;'>Chargement...</li>";
                 return;
             }
 
@@ -540,11 +564,6 @@
                     <span class="name">${entry.name}</span>
                     <span class="score">${entry.score}</span>
                 `;
-                // Met en surbrillance le score qui vient d'être fait (s'il correspond au score actuel)
-                if (entry.score === score && isGameOverState) {
-                    li.style.textShadow = "0 0 10px #fff";
-                    li.style.animation = "textPulse 1s infinite alternate";
-                }
                 listElement.appendChild(li);
             });
         }
@@ -565,7 +584,6 @@
         let touchStartX = 0, touchStartY = 0;
         document.addEventListener('touchstart', function(event) {
             if (!gameStarted) return;
-            // Ne pas bloquer le bouton de relance sur l'écran tactile
             if (event.target.tagName === 'BUTTON') return;
             if (isGameOverState) { resetGame(); return; }
             touchStartX = event.changedTouches[0].screenX;
