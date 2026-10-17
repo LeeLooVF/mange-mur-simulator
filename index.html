@@ -63,8 +63,6 @@
             border-radius: 10px;
             color: white;
             text-align: center;
-            overflow-y: auto;
-            padding: 20px;
         }
 
         #startScreen {
@@ -83,68 +81,24 @@
         }
 
         h1.cheh-title {
-            font-size: 50px;
-            margin: 0;
+            font-size: 60px;
+            margin: 0 0 10px 0;
             color: #ff007f;
             text-shadow: 0 0 20px rgba(255, 0, 127, 0.8), 4px 4px 0px #300020;
             letter-spacing: 6px;
         }
 
         .overlayScreen p.score-text {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
-            margin: 5px 0;
+            margin: 15px 0;
             text-shadow: 0 2px 5px rgba(0,0,0,0.8);
         }
 
-        /* --- CLASSEMENT TOP 10 --- */
-        #leaderboardContainer {
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #ff007f;
-            border-radius: 8px;
-            padding: 10px 15px;
-            margin: 10px 0;
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-            width: 80%;
-            max-width: 300px;
-            max-height: 180px;
-            overflow-y: auto;
-        }
-
-        #leaderboardContainer h3 {
-            margin: 0 0 8px 0;
-            color: #00e5ff;
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 5px #00e5ff;
-        }
-
-        .leaderboard-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
-            text-align: left;
-        }
-
-        .leaderboard-entry {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 3px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 2px;
-        }
-
-        .leaderboard-entry .rank { color: #888; width: 30px;}
-        .leaderboard-entry .name { color: #ffb3d9; font-weight: bold; word-break: break-all; max-width: 150px; }
-        .leaderboard-entry .score { color: #00e5ff; font-weight: bold;}
-
         button {
-            margin-top: 8px;
-            padding: 8px 20px;
-            font-size: 16px;
+            margin-top: 15px;
+            padding: 12px 30px;
+            font-size: 20px;
             background: transparent;
             color: #00e5ff;
             border: 2px solid #00e5ff;
@@ -169,7 +123,7 @@
 
     <div id="scoreboard">
         <div id="scoreDisplay">Score: 0</div>
-        <div id="highScoreDisplay">Top 1: 0</div>
+        <div id="highScoreDisplay">Record: 0</div>
     </div>
     
     <div id="gameContainer">
@@ -184,17 +138,7 @@
         <!-- Écran Game Over -->
         <div id="gameOverScreen" class="overlayScreen">
             <h1 class="cheh-title">CHEH</h1>
-            <p class="score-text">Score final : <span id="finalScore" style="color:#00e5ff; font-size:22px;">0</span></p>
-            
-            <!-- Tableau des 10 meilleurs -->
-            <div id="leaderboardContainer">
-                <h3>Classement Top 10</h3>
-                <ul id="leaderboardList" class="leaderboard-list">
-                    <li>Chargement...</li>
-                </ul>
-            </div>
-
-            <button onclick="chargerClassement()">Actualiser Classement</button>
+            <p class="score-text">Score final : <span id="finalScore" style="color:#00e5ff; font-size:28px;">0</span></p>
             <button onclick="resetGame()">Rejouer</button>
         </div>
     </div>
@@ -205,42 +149,8 @@
 
         let vitesseJeu = 170; 
         let score = 0;
-        
-        let top10 = [];
-
-        async function chargerClassement() {
-            try {
-                const reponse = await fetch('/api');
-                const data = await reponse.json();
-                if (Array.isArray(data)) {
-                    top10 = data;
-                    updateHighScoreDisplay();
-                    renderLeaderboard();
-                }
-            } catch (e) {
-                console.error("Erreur de chargement du classement :", e);
-            }
-        }
-
-        async function envoyerScore(nom, scoreFinal) {
-            try {
-                const reponse = await fetch('/api', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: nom, score: scoreFinal })
-                });
-                const data = await reponse.json();
-                if (Array.isArray(data)) {
-                    top10 = data;
-                    updateHighScoreDisplay();
-                    renderLeaderboard();
-                }
-            } catch (e) {
-                console.error("Erreur d'envoi du score :", e);
-            }
-        }
-
-        chargerClassement();
+        let highScore = localStorage.getItem("snakeHighScore") || 0;
+        document.getElementById("highScoreDisplay").innerHTML = "Record: " + highScore;
 
         let gridSize = 40; 
         let dx = gridSize;
@@ -502,52 +412,20 @@
             return snake[0].x < 0 || snake[0].x >= canvas.width || snake[0].y < 0 || snake[0].y >= canvas.height;
         }
 
-        // --- GESTION DE LA FIN DE PARTIE ET DU CLASSEMENT ---
         function showGameOver() {
             isGameOverState = true;
             stopBGM(); 
             playSound('die'); 
             
             document.getElementById("finalScore").innerText = score;
-            document.getElementById("gameOverScreen").style.display = "flex";
             
-            chargerClassement();
-
-            setTimeout(() => {
-                if (score > 0) {
-                    let playerName = prompt("FIN DE PARTIE ! 🎉\nEntrez votre pseudo (maximum 10 caractères) :", "JOUEUR");
-                    if (playerName && playerName.trim() !== "") {
-                        playerName = playerName.trim().substring(0, 10); // Limite à 10 caractères max
-                        envoyerScore(playerName, score);
-                    }
-                }
-            }, 300);
-        }
-
-        function updateHighScoreDisplay() {
-            let highest = top10.length > 0 ? top10[0].score : 0;
-            document.getElementById("highScoreDisplay").innerHTML = "Top 1: " + highest;
-        }
-
-        function renderLeaderboard() {
-            const listElement = document.getElementById("leaderboardList");
-            listElement.innerHTML = ""; 
-
-            if (top10.length === 0) {
-                listElement.innerHTML = "<li style='text-align:center; color:#888;'>Aucun score enregistré</li>";
-                return;
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem("snakeHighScore", highScore);
+                document.getElementById("highScoreDisplay").innerHTML = "Record: " + highScore;
             }
 
-            top10.forEach((entry, index) => {
-                const li = document.createElement("li");
-                li.className = "leaderboard-entry";
-                li.innerHTML = `
-                    <span class="rank">#${index + 1}</span>
-                    <span class="name">${entry.name}</span>
-                    <span class="score">${entry.score}</span>
-                `;
-                listElement.appendChild(li);
-            });
+            document.getElementById("gameOverScreen").style.display = "flex";
         }
 
         function resetGame() {
