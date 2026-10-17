@@ -52,7 +52,7 @@
         /* Animation douce de type "nuage" / flottement */
         @keyframes cloudFloat {
             0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(0.5deg); }
+            50% { transform: translateY(-6px) rotate(0.3deg); }
             100% { transform: translateY(0px) rotate(0deg); }
         }
 
@@ -62,11 +62,11 @@
 
         /* Décalage des animations pour un effet vivant et naturel */
         .cloud-card:nth-child(1) { animation-delay: 0s; }
-        .cloud-card:nth-child(2) { animation-delay: 0.5s; }
-        .cloud-card:nth-child(3) { animation-delay: 1.0s; }
-        .cloud-card:nth-child(4) { animation-delay: 1.5s; }
-        .cloud-card:nth-child(5) { animation-delay: 2.0s; }
-        .cloud-card:nth-child(6) { animation-delay: 2.5s; }
+        .cloud-card:nth-child(2) { animation-delay: 0.4s; }
+        .cloud-card:nth-child(3) { animation-delay: 0.8s; }
+        .cloud-card:nth-child(4) { animation-delay: 1.2s; }
+        .cloud-card:nth-child(5) { animation-delay: 1.6s; }
+        .cloud-card:nth-child(6) { animation-delay: 2.0s; }
 
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -87,9 +87,9 @@
     </header>
 
     <!-- SECTION CENTRALE -->
-    <main class="w-full max-w-5xl my-6 flex flex-col items-center">
+    <main class="w-full max-w-6xl my-6 flex flex-col items-center">
         
-        <!-- ENCADRÉ DU CLASSEMENT UNIQUE (REMONTÉ TOUT EN HAUT) -->
+        <!-- ENCADRÉ DU CLASSEMENT UNIQUE (TOUT EN HAUT) -->
         <div class="w-full max-w-2xl mb-8 px-6 py-4 bg-slate-800/90 border-2 border-cyan-500/50 rounded-2xl shadow-[0_0_20px_rgba(0,229,255,0.2)] text-center backdrop-blur-md">
             <div class="text-2xl mb-1">🏆</div>
             <p class="text-cyan-300 font-bold text-sm sm:text-base tracking-wide uppercase">
@@ -100,66 +100,61 @@
             </p>
         </div>
 
-        <!-- Grille supérieure (2 cartes) -->
-        <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mb-6">
+        <!-- GRILLE UNIFORMISÉE DES 6 JEUX (Même hauteur pour toutes les cartes) -->
+        <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl">
             
-            <!-- CARTE : CACA EDITION -->
-            <a href="index_caca.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-amber-500 rounded-3xl">
-                <div class="h-full bg-gradient-to-br from-[#4a3320] to-[#1f140a] border-4 border-[#8b4513] rounded-3xl p-6 flex flex-col items-center justify-center text-center shadow-[0_8px_0_#2e1c11]">
-                    <div class="text-4xl mb-2">💩 🍔</div>
-                    <h2 class="font-caca caca-text text-3xl text-[#8b4513] uppercase tracking-wide mb-1">Caca Edition</h2>
-                    <p class="font-caca text-[#ffcc00] text-lg tracking-wider opacity-90">Pour les grosses faims !</p>
+            <!-- CARTE 1 : CACA EDITION -->
+            <a href="index_caca.html" class="cloud-card flex flex-col w-full h-44 outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-amber-500 rounded-3xl">
+                <div class="w-full h-full bg-gradient-to-br from-[#4a3320] to-[#1f140a] border-4 border-[#8b4513] rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-[0_8px_0_#2e1c11]">
+                    <div class="text-3xl mb-1">💩 🍔</div>
+                    <h2 class="font-caca caca-text text-2xl sm:text-3xl text-[#8b4513] uppercase tracking-wide mb-1">Caca Edition</h2>
+                    <p class="font-caca text-[#ffcc00] text-base sm:text-lg tracking-wider opacity-90">Pour les grosses faims !</p>
                 </div>
             </a>
 
-            <!-- CARTE : HELLO KITTY EDITION -->
-            <a href="index_Kitty.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-pink-400 rounded-[40px]">
-                <div class="h-full bg-[#ffe6f2] border-4 border-[#ff99c2] rounded-[40px] p-6 flex flex-col items-center justify-center text-center shadow-[0_8px_0_#ffb3d9]">
-                    <div class="text-4xl mb-2 drop-shadow-md">🎀 🌸</div>
-                    <h2 class="font-kitty kitty-text text-3xl text-[#ff1493] uppercase tracking-wide mb-1">Kitty Edition</h2>
-                    <p class="font-kitty text-[#d10056] text-base font-semibold opacity-80">Mignon et rose !</p>
+            <!-- CARTE 2 : HELLO KITTY EDITION -->
+            <a href="index_Kitty.html" class="cloud-card flex flex-col w-full h-44 outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-pink-400 rounded-3xl">
+                <div class="w-full h-full bg-[#ffe6f2] border-4 border-[#ff99c2] rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-[0_8px_0_#ffb3d9]">
+                    <div class="text-3xl mb-1 drop-shadow-md">🎀 🌸</div>
+                    <h2 class="font-kitty kitty-text text-2xl sm:text-3xl text-[#ff1493] uppercase tracking-wide mb-1">Kitty Edition</h2>
+                    <p class="font-kitty text-[#d10056] text-sm sm:text-base font-semibold opacity-80">Mignon et rose !</p>
                 </div>
             </a>
 
-        </div>
-
-        <!-- Grille inférieure (4 cartes : Néon, Galaxy, Super U, Biéro-Man 2) -->
-        <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mt-2">
-            
-            <!-- CARTE : NÉON EDITION -->
-            <a href="index_Néon.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-cyan-400 rounded-2xl">
-                <div class="h-full bg-[#070810] border-2 border-[#00e5ff] rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(0,229,255,0.3)] relative overflow-hidden">
+            <!-- CARTE 3 : NÉON EDITION -->
+            <a href="index_Néon.html" class="cloud-card flex flex-col w-full h-44 outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-cyan-400 rounded-3xl">
+                <div class="w-full h-full bg-[#070810] border-2 border-[#00e5ff] rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(0,229,255,0.3)] relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-b from-[rgba(0,229,255,0.1)] to-transparent pointer-events-none"></div>
-                    <div class="text-4xl mb-2 drop-shadow-[0_0_8px_#ff007f]">⚡ 🕹️</div>
-                    <h2 class="font-neon neon-text text-xl text-white font-bold uppercase tracking-widest mb-1">Néon Edition</h2>
+                    <div class="text-3xl mb-1 drop-shadow-[0_0_8px_#ff007f]">⚡ 🕹️</div>
+                    <h2 class="font-neon neon-text text-xl sm:text-2xl text-white font-bold uppercase tracking-widest mb-1">Néon Edition</h2>
                     <p class="font-neon text-[#ffb3d9] text-xs font-bold uppercase tracking-[0.15em]">Arcade</p>
                 </div>
             </a>
 
-            <!-- CARTE : GALAXY EDITION -->
-            <a href="index_Space.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-purple-500 rounded-2xl">
-                <div class="h-full bg-gradient-to-br from-[#1b0033] to-[#050011] border-2 border-[#b026ff] rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-[0_0_20px_rgba(176,38,255,0.3)] relative overflow-hidden">
+            <!-- CARTE 4 : GALAXY EDITION -->
+            <a href="index_Space.html" class="cloud-card flex flex-col w-full h-44 outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-purple-500 rounded-3xl">
+                <div class="w-full h-full bg-gradient-to-br from-[#1b0033] to-[#050011] border-2 border-[#b026ff] rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-[0_0_20px_rgba(176,38,255,0.3)] relative overflow-hidden">
                     <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 4px); background-size: 40px 40px; pointer-events-none;"></div>
-                    <div class="text-4xl mb-2 drop-shadow-[0_0_8px_#00ffff]">🚀 🌌</div>
-                    <h2 class="font-space space-text text-xl text-white font-black uppercase tracking-widest mb-1">Galaxy Edition</h2>
+                    <div class="text-3xl mb-1 drop-shadow-[0_0_8px_#00ffff]">🚀 🌌</div>
+                    <h2 class="font-space space-text text-xl sm:text-2xl text-white font-black uppercase tracking-widest mb-1">Galaxy Edition</h2>
                     <p class="font-space text-[#b026ff] text-xs font-bold uppercase tracking-widest">Cosmique</p>
                 </div>
             </a>
 
-            <!-- CARTE : SUPER U EDITION -->
-            <a href="index_SuperU.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-blue-500 rounded-2xl">
-                <div class="h-full bg-gradient-to-br from-[#f4f6f8] to-[#e2e8f0] border-2 border-[#0055A4] rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-[0_5px_15px_rgba(0,85,164,0.2)]">
-                    <div class="text-4xl mb-2">🛒 🧼</div>
-                    <h2 class="font-superu superu-text text-xl text-[#0055A4] font-black uppercase tracking-wider mb-1">Super U</h2>
+            <!-- CARTE 5 : SUPER U EDITION -->
+            <a href="index_SuperU.html" class="cloud-card flex flex-col w-full h-44 outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-blue-500 rounded-3xl">
+                <div class="w-full h-full bg-gradient-to-br from-[#f4f6f8] to-[#e2e8f0] border-2 border-[#0055A4] rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-[0_5px_15px_rgba(0,85,164,0.2)]">
+                    <div class="text-3xl mb-1">🛒 🧼</div>
+                    <h2 class="font-superu superu-text text-xl sm:text-2xl text-[#0055A4] font-black uppercase tracking-wider mb-1">Super U</h2>
                     <p class="font-superu text-[#E30613] text-xs font-extrabold uppercase tracking-widest">Ménage</p>
                 </div>
             </a>
 
-            <!-- CARTE : BIÉRO-MAN SIMULATOR 2 -->
-            <a href="index_tourner_2.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-amber-400 rounded-2xl">
-                <div class="h-full bg-gradient-to-br from-[#2b1d0c] to-[#3e2714] border-2 border-[#f39c12] rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-[0_5px_15px_rgba(243,156,18,0.3)]">
-                    <div class="text-4xl mb-2">🍺 🍻</div>
-                    <h2 class="font-biere biere-text text-xl text-[#f1c40f] font-black uppercase tracking-wider mb-1">Biéro-Man 2</h2>
+            <!-- CARTE 6 : BIÉRO-MAN SIMULATOR 2 -->
+            <a href="index_tourner_2.html" class="cloud-card flex flex-col w-full h-44 outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-amber-400 rounded-3xl">
+                <div class="w-full h-full bg-gradient-to-br from-[#2b1d0c] to-[#3e2714] border-2 border-[#f39c12] rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-[0_5px_15px_rgba(243,156,18,0.3)]">
+                    <div class="text-3xl mb-1">🍺 🍻</div>
+                    <h2 class="font-biere biere-text text-xl sm:text-2xl text-[#f1c40f] font-black uppercase tracking-wider mb-1">Biéro-Man 2</h2>
                     <p class="font-biere text-[#e74c3c] text-xs font-extrabold uppercase tracking-widest">Tournée</p>
                 </div>
             </a>
