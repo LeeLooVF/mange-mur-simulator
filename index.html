@@ -12,13 +12,25 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            padding-top: 10px;
+            padding-top: 5px;
             background-color: #070810; 
             color: #00e5ff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden; 
             touch-action: none; 
             box-sizing: border-box;
+        }
+
+        /* --- NOUVEAU STYLE POUR LES CRÉDITS --- */
+        #authorCredits {
+            font-size: 14px;
+            color: #ffb3d9;
+            text-shadow: 0 0 5px #ff007f;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
         }
 
         #gameTitle {
@@ -46,7 +58,6 @@
             width: 100%;
             max-width: 95vw;
             max-height: calc(100vh - 140px);
-            /* NOUVELLE PROPORTION : 1080 par 1640 (Grille rectangulaire avec des cases carrées) */
             aspect-ratio: 1080 / 1640; 
             margin: 0 auto; 
         }
@@ -176,6 +187,7 @@
         }
 
         @media (max-width: 400px) {
+            #authorCredits { font-size: 12px; letter-spacing: 2px; }
             #scoreboard { font-size: 18px; gap: 20px; }
             h1.cheh-title { font-size: 32px; }
             .overlayScreen p.score-text { font-size: 16px; }
@@ -183,6 +195,9 @@
     </style>
 </head>
 <body>
+
+    <!-- MENTION AJOUTÉE ICI -->
+    <div id="authorCredits">By Louane 2026</div>
 
     <h1 id="gameTitle">Mange-Mur Simulator</h1>
 
@@ -192,7 +207,6 @@
     </div>
     
     <div id="gameContainer">
-        <!-- NOUVELLES DIMENSIONS : 1080 par 1640 (+5 lignes en haut, +8 lignes en bas) -->
         <canvas id="gameCanvas" width="1080" height="1640"></canvas>
         
         <div id="startScreen" class="overlayScreen">
@@ -360,7 +374,6 @@
             document.getElementById('gameOverScreen').style.display = "none";
             
             snake = [];
-            // Centrage mis à jour pour la hauteur de 1640 (Position Y autour de 800)
             for(let i=0; i<10; i++){
                 snake.push({x: 520 - (i*gridSize), y: 800});
             }
