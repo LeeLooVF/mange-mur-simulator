@@ -555,7 +555,7 @@
             const head = {x: snake[0].x + dx, y: snake[0].y + dy};
             snake.unshift(head); 
             if (snake[0].x === foodX && snake[0].y === foodY) {
-                score += 1; // 1 point par tache nettoyée
+                score += 10; // 10 points par tache nettoyée
                 document.getElementById('scoreDisplay').innerHTML = "TACHES: " + score;
                 playSound('eat'); 
                 createExplosion(foodX, foodY); 
