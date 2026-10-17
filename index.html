@@ -6,7 +6,7 @@
     <title>Mange-Mur Simulator - Menu Principal</title>
     
     <!-- Importation des polices pour chaque thème -->
-    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@500;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@500;600&family=Orbitron:wght@500;700;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS pour le style responsive et moderne -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,6 +20,7 @@
                         'kitty': ['Fredoka', 'sans-serif'],
                         'space': ['Orbitron', 'sans-serif'],
                         'neon': ['Segoe UI', 'Tahoma', 'sans-serif'],
+                        'superu': ['Montserrat', 'sans-serif'],
                     }
                 }
             }
@@ -39,6 +40,9 @@
         }
         .kitty-text {
             text-shadow: 2px 2px 0px #ffffff, -1px -1px 0px #ffffff, 1px -1px 0px #ffffff, -1px 1px 0px #ffffff;
+        }
+        .superu-text {
+            text-shadow: 2px 2px 0px #ffffff, 4px 4px 0px rgba(0, 85, 164, 0.2);
         }
 
         /* Animation de fond pour le hub */
@@ -83,7 +87,6 @@
         <!-- CARTE : NÉON EDITION -->
         <a href="index_Néon.html" class="block w-full outline-none transform transition-all duration-200 hover:-translate-y-1 active:translate-y-1 focus:ring-4 focus:ring-cyan-400 rounded-2xl">
             <div class="h-full bg-[#070810] border-2 border-[#00e5ff] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[0_0_20px_rgba(0,229,255,0.4)] active:shadow-[0_0_5px_rgba(0,229,255,0.8)] relative overflow-hidden">
-                <!-- Effet de lueur interne -->
                 <div class="absolute inset-0 bg-gradient-to-b from-[rgba(0,229,255,0.1)] to-transparent pointer-events-none"></div>
                 <div class="text-5xl mb-3 drop-shadow-[0_0_10px_#ff007f]">⚡ 🕹️</div>
                 <h2 class="font-neon neon-text text-2xl sm:text-3xl text-white font-bold uppercase tracking-widest mb-2">Néon Edition</h2>
@@ -94,11 +97,19 @@
         <!-- CARTE : GALAXY EDITION -->
         <a href="index_Space.html" class="block w-full outline-none transform transition-all duration-200 hover:-translate-y-1 active:translate-y-1 focus:ring-4 focus:ring-purple-500 rounded-2xl">
             <div class="h-full bg-gradient-to-br from-[#1b0033] to-[#050011] border-2 border-[#b026ff] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[0_0_25px_rgba(176,38,255,0.4)] active:shadow-[0_0_10px_rgba(176,38,255,0.8)] relative overflow-hidden">
-                <!-- Étoiles stylisées en fond de carte -->
                 <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 4px); background-size: 50px 50px; pointer-events-none;"></div>
                 <div class="text-5xl mb-3 drop-shadow-[0_0_10px_#00ffff]">🚀 🌌</div>
                 <h2 class="font-space space-text text-2xl sm:text-3xl text-white font-black uppercase tracking-widest mb-2">Galaxy Edition</h2>
                 <p class="font-space text-[#b026ff] text-sm font-bold uppercase tracking-widest">Voyage Cosmique</p>
+            </div>
+        </a>
+
+        <!-- CARTE : SUPER U EDITION (NOUVEAU) -->
+        <a href="index_SuperU.html" class="block w-full outline-none transform transition-all duration-200 hover:-translate-y-1 active:translate-y-1 focus:ring-4 focus:ring-blue-500 rounded-2xl sm:col-span-2 max-w-lg mx-auto">
+            <div class="h-full bg-gradient-to-br from-[#f4f6f8] to-[#e2e8f0] border-4 border-[#0055A4] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[0_8px_0_#003366] active:shadow-[0_0px_0_#003366] relative overflow-hidden">
+                <div class="text-5xl mb-3">🛒 🧼</div>
+                <h2 class="font-superu superu-text text-2xl sm:text-3xl text-[#0055A4] font-black uppercase tracking-wider mb-2">Super U Edition</h2>
+                <p class="font-superu text-[#E30613] text-sm font-extrabold uppercase tracking-widest">Nettoyage de Rayon</p>
             </div>
         </a>
 

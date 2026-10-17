@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Super U - Ménage Simulator</title>
+    
+    <!-- Police claire et moderne, type grande distribution -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding-top: 5px;
+            /* Fond gris très clair (carrelage propre) */
+            background-color: #f4f6f8; 
+            color: #0055A4; /* Bleu Super U */
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden; 
+            touch-action: none; 
+            box-sizing: border-box;
+        }
+
+        #authorCredits {
+            font-size: 14px;
+            color: #E30613; /* Rouge Super U */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+
+        #gameTitle {
+            font-size: clamp(20px, 6vw, 34px); 
+            white-space: nowrap; 
+            margin: 0 0 10px 0;
+            color: #0055A4;
+            text-shadow: 2px 2px 0px #ffffff, 4px 4px 0px rgba(0, 85, 164, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            font-weight: 900;
+        }
+
+        .u-red {
+            color: #E30613;
+        }
+
+        #scoreboard {
+            display: flex;
+            gap: 30px;
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: #ffffff;
+            background: #0055A4;
+            padding: 8px 25px;
+            border-radius: 30px;
+            border: 3px solid #E30613;
+            box-shadow: 0 5px 15px rgba(0, 85, 164, 0.3);
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 100%;
+            max-width: 95vw;
+            max-height: calc(100vh - 140px);
+            /* Dimensions conservées : 1080x1440 */
+            aspect-ratio: 1080 / 1440; 
+            margin: 0 auto; 
+        }
+
+        canvas {
+            /* Sol du magasin (Blanc cassé) */
+            background-color: #ffffff; 
+            border: 5px solid #0055A4;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            width: 100%; 
+            height: 100%; 
+            display: block;
+            object-fit: contain; 
+        }
+
+        .overlayScreen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.9); /* Voile blanc */
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            color: #0055A4;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 3px solid #E30613;
+        }
+
+        #startScreen { z-index: 10; }
+        
+        #gameOverScreen {
+            display: none;
+            z-index: 5;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h1.cheh-title {
+            font-size: 42px;
+            margin: 0;
+            color: #E30613;
+            text-shadow: 3px 3px 0px #ffffff, 6px 6px 0px rgba(227, 6, 19, 0.2);
+            letter-spacing: 2px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .overlayScreen p.score-text {
+            font-size: 20px;
+            font-weight: 800;
+            margin: 10px 0;
+            background: #0055A4;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        #leaderboardContainer {
+            background: #f4f6f8;
+            border: 3px solid #0055A4;
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.05);
+            width: 85%;
+            max-width: 280px;
+            max-height: 200px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        #leaderboardContainer h3 {
+            margin: 0 0 8px 0;
+            color: #E30613;
+            text-transform: uppercase;
+            font-size: 15px;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        .leaderboard-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 14px; 
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            border-bottom: 2px dotted #cccccc;
+            padding-bottom: 4px;
+        }
+
+        .leaderboard-entry .rank { color: #E30613; width: 25px;}
+        .leaderboard-entry .name { color: #0055A4; max-width: 120px; overflow: hidden;}
+        .leaderboard-entry .score { color: #E30613; font-weight: 900; }
+
+        button {
+            margin-top: 10px;
+            padding: 12px 0;
+            width: 80%;
+            max-width: 240px;
+            font-size: 16px;
+            background-color: #E30613;
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 0px #b3000b, 0 10px 15px rgba(227, 6, 19, 0.4);
+            transition: all 0.1s;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-family: inherit;
+            letter-spacing: 1px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        button:hover, button:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0px #b3000b, 0 4px 5px rgba(227, 6, 19, 0.4);
+            background-color: #ff1a2b;
+        }
+
+        @media (max-width: 400px) {
+            #authorCredits { font-size: 12px; }
+            #scoreboard { font-size: 18px; gap: 20px; }
+            h1.cheh-title { font-size: 34px; }
+            .overlayScreen p.score-text { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="authorCredits">🛒 By Louane 2026 🛒</div>
+
+    <h1 id="gameTitle">SUPER <span class="u-red">U</span> MÉNAGE</h1>
+
+    <div id="scoreboard">
+        <div id="scoreDisplay">TACHES: 0</div>
+        <div id="highScoreDisplay">TOP 1: 0</div>
+    </div>
+    
+    <div id="gameContainer">
+        <!-- 1080x1440 -->
+        <canvas id="gameCanvas" width="1080" height="1440"></canvas>
+        
+        <div id="startScreen" class="overlayScreen">
+            <h2 style="color: #0055A4; font-size: 26px; text-transform: uppercase; font-weight: 900;">Au boulot ! 🧼</h2>
+            <button onclick="startGame()">Nettoyer le rayon</button>
+        </div>
+
+        <div id="gameOverScreen" class="overlayScreen">
+            <h1 class="cheh-title">SOL GLISSANT !</h1>
+            <p class="score-text">Taches nettoyées : <span id="finalScore" style="color:#ffcc00;">0</span></p>
+            
+            <div id="leaderboardContainer">
+                <h3>Employés du mois</h3>
+                <ul id="leaderboardList" class="leaderboard-list">
+                    <li>Chargement...</li>
+                </ul>
+            </div>
+
+            <button onclick="chargerClassement()">Actualiser</button>
+            <button onclick="resetGame()">Reprendre le service</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let vitesseJeu = 170; 
+        let score = 0;
+        let top10 = [];
+
+        async function chargerClassement() {
+            try {
+                const reponse = await fetch('/api');
+                const data = await reponse.json();
+                if (Array.isArray(data)) {
+                    top10 = data;
+                    updateHighScoreDisplay();
+                    renderLeaderboard();
+                }
+            } catch (e) {
+                console.error("Erreur de chargement du classement :", e);
+            }
+        }
+
+        async function envoyerScore(nom, scoreFinal) {
+            try {
+                const reponse = await fetch('/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: nom, score: scoreFinal })
+                });
+                const data = await reponse.json();
+                if (Array.isArray(data)) {
+                    top10 = data;
+                    updateHighScoreDisplay();
+                    renderLeaderboard();
+                }
+            } catch (e) {
+                console.error("Erreur d'envoi du score :", e);
+            }
+        }
+
+        chargerClassement();
+
+        let gridSize = 40; 
+        let dx = gridSize;
+        let dy = 0;
+        let snake = [];
+        let foodX;
+        let foodY;
+        let isGameOverState = false;
+        let gameLoopTimeout;
+        let gameStarted = false;
+        let particles = [];
+
+        let audioCtx;
+        let bgmInterval;
+        let currentNoteIndex = 0;
+        // Petite mélodie d'attente supermarché (Muzak)
+        const melody = [392.00, 440.00, 493.88, 523.25, 392.00, 523.25];
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (type === 'eat') {
+                // Bruit d'aspiration / nettoyage (Slurp/Woosh)
+                osc.type = 'sine'; 
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1); 
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } else if (type === 'die') {
+                // Alerte / Glissade
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.exponentialRampToValueAtTime(50, now + 0.5); 
+                gainNode.gain.setValueAtTime(0.2, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        }
+
+        function playBGMNote() {
+            if (!audioCtx || isGameOverState) return;
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            
+            osc.type = 'triangle'; 
+            osc.frequency.value = melody[currentNoteIndex];
+            
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.02, now + 0.05); 
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3); 
+            
+            osc.start(now);
+            osc.stop(now + 0.35);
+            
+            currentNoteIndex = (currentNoteIndex + 1) % melody.length;
+        }
+
+        function startBGM() {
+            if(bgmInterval) clearInterval(bgmInterval);
+            currentNoteIndex = 0;
+            bgmInterval = setInterval(playBGMNote, 600); // Rythme de marche
+        }
+
+        function stopBGM() {
+            if(bgmInterval) clearInterval(bgmInterval);
+        }
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = "none";
+            initAudio();
+            gameStarted = true;
+            initGame();
+        }
+
+        function initGame() {
+            score = 0;
+            dx = gridSize;
+            dy = 0;
+            isGameOverState = false;
+            particles = [];
+            document.getElementById('scoreDisplay').innerHTML = "TACHES: " + score;
+            document.getElementById('gameOverScreen').style.display = "none";
+            
+            snake = [];
+            for(let i=0; i<6; i++){ 
+                snake.push({x: 520 - (i*gridSize), y: 720});
+            }
+
+            generateFood();
+            startBGM(); 
+            main();
+        }
+
+        function main() {
+            if (hasGameEnded()) {
+                showGameOver();
+                return;
+            }
+            gameLoopTimeout = setTimeout(function onTick() {
+                clearCanvas();
+                drawGrid();
+                updateParticles();
+                drawParticles();
+                drawFood(); // La tache
+                advanceSnake(); // La laveuse avance
+                drawSnake(); // Dessin de la laveuse et de la mousse
+                main();
+            }, vitesseJeu); 
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawGrid() {
+            // Dessin du carrelage du magasin
+            ctx.strokeStyle = "#e5e9f0"; 
+            ctx.lineWidth = 2;
+            for (let i = 0; i < canvas.width; i += gridSize) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            }
+            for (let i = 0; i < canvas.height; i += gridSize) {
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+            }
+            
+            // Lignes directrices (style allées de supermarché)
+            ctx.strokeStyle = "rgba(0, 85, 164, 0.05)";
+            ctx.lineWidth = 6;
+            for (let i = gridSize * 3; i < canvas.width; i += gridSize * 6) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            }
+        }
+
+        function createExplosion(x, y) {
+            // Explosion de bulles de savon (cyan et blanc)
+            const bubbleColors = ['#ffffff', '#e0ffff', '#add8e6', '#87cefa'];
+            for (let i = 0; i < 25; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 8 + 3;
+                particles.push({
+                    x: x + gridSize / 2, y: y + gridSize / 2,
+                    vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+                    color: bubbleColors[Math.floor(Math.random() * bubbleColors.length)],
+                    alpha: 1, life: Math.random() * 15 + 10,
+                    size: Math.random() * 5 + 2
+                });
+            }
+        }
+
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx; p.y += p.vy;
+                p.vx *= 0.85; p.vy *= 0.85; 
+                p.alpha -= 1 / p.life;
+                p.size *= 0.95; // Les bulles éclatent
+                if (p.alpha <= 0 || p.size < 0.5) particles.splice(i, 1);
+            }
+        }
+
+        function drawParticles() {
+            particles.forEach(p => {
+                ctx.save();
+                ctx.globalAlpha = p.alpha; 
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Petit reflet sur la bulle
+                ctx.fillStyle = "#ffffff";
+                ctx.beginPath();
+                ctx.arc(p.x - p.size/3, p.y - p.size/3, p.size/3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+        }
+
+        function drawSnake() {
+            for(let i = snake.length - 1; i >= 0; i--) drawSnakePart(snake[i], i);
+        }
+
+        function drawSnakePart(snakePart, index) {
+            if (index === 0) {
+                // TÊTE DU SERPENT : LA LAVEUSE DE SOL SUPER U
+                
+                // 1. Châssis principal de la machine (Bleu)
+                ctx.fillStyle = "#0055A4";
+                ctx.beginPath();
+                ctx.roundRect(snakePart.x + 2, snakePart.y + 2, gridSize - 4, gridSize - 4, 8);
+                ctx.fill();
+                ctx.strokeStyle = "#003366";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // 2. Bande Rouge Super U au milieu
+                ctx.fillStyle = "#E30613";
+                if(dx !== 0) { // Déplacement horizontal
+                    ctx.fillRect(snakePart.x + 10, snakePart.y + 2, gridSize - 20, gridSize - 4);
+                } else { // Déplacement vertical
+                    ctx.fillRect(snakePart.x + 2, snakePart.y + 10, gridSize - 4, gridSize - 20);
+                }
+
+                // 3. Les deux brosses rotatives grises à l'avant !
+                ctx.fillStyle = "#666666";
+                let b1x = 0, b1y = 0, b2x = 0, b2y = 0;
+                if(dx === gridSize) { // Va à droite
+                    b1x = 36; b1y = 8; b2x = 36; b2y = 32;
+                } else if(dx === -gridSize) { // Va à gauche
+                    b1x = 4; b1y = 8; b2x = 4; b2y = 32;
+                } else if(dy === -gridSize) { // Va en haut
+                    b1x = 8; b1y = 4; b2x = 32; b2y = 4;
+                } else if(dy === gridSize) { // Va en bas
+                    b1x = 8; b1y = 36; b2x = 32; b2y = 36;
+                }
+
+                // Dessin brosse 1
+                ctx.beginPath(); ctx.arc(snakePart.x + b1x, snakePart.y + b1y, 7, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = "#dddddd"; ctx.stroke();
+                // Dessin brosse 2
+                ctx.beginPath(); ctx.arc(snakePart.x + b2x, snakePart.y + b2y, 7, 0, Math.PI*2); ctx.fill();
+                ctx.stroke();
+
+            } else {
+                // LE CORPS DU SERPENT : LA MOUSSE DE SAVON LAISSÉE DERRIÈRE
+                const ratio = index / snake.length; // 0 à 1
+                const size = (gridSize/2 - 2) * (1 - ratio * 0.4); // Rétrécit un peu vers la fin
+                
+                ctx.fillStyle = "rgba(173, 216, 230, 0.8)"; // Bleu ciel transparent (mousse d'eau)
+                ctx.beginPath();
+                ctx.arc(snakePart.x + gridSize/2, snakePart.y + gridSize/2, size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Petite bulle blanche dans la mousse
+                ctx.fillStyle = "#ffffff";
+                ctx.beginPath();
+                ctx.arc(snakePart.x + gridSize/2 - size/2, snakePart.y + gridSize/2 - size/2, size/3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function advanceSnake() {
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            snake.unshift(head); 
+            if (snake[0].x === foodX && snake[0].y === foodY) {
+                score += 1; // 1 point par tache nettoyée
+                document.getElementById('scoreDisplay').innerHTML = "TACHES: " + score;
+                playSound('eat'); 
+                createExplosion(foodX, foodY); 
+                generateFood();
+            } else {
+                snake.pop(); 
+            }
+        }
+
+        function drawFood() {
+            // LA NOURRITURE : UNE TACHE SUR LE SOL
+            const cx = foodX + gridSize / 2;
+            const cy = foodY + gridSize / 2;
+            
+            ctx.fillStyle = "#5c3a21"; // Couleur café/boue
+            ctx.beginPath();
+            
+            // On dessine une forme de "splat" irrégulière (plusieurs ronds)
+            ctx.arc(cx - 5, cy - 2, 10, 0, Math.PI * 2);
+            ctx.arc(cx + 8, cy - 4, 8, 0, Math.PI * 2);
+            ctx.arc(cx - 2, cy + 8, 9, 0, Math.PI * 2);
+            ctx.arc(cx + 6, cy + 6, 7, 0, Math.PI * 2);
+            
+            ctx.fill();
+            
+            // Quelques gouttes éclaboussées autour
+            ctx.beginPath(); ctx.arc(cx - 14, cy - 10, 3, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(cx + 15, cy + 12, 2, 0, Math.PI*2); ctx.fill();
+        }
+
+        function randomTen(min, max) { return Math.round((Math.random() * (max - min) + min) / gridSize) * gridSize; }
+        
+        function generateFood() {
+            foodX = randomTen(0, canvas.width - gridSize); foodY = randomTen(0, canvas.height - gridSize);
+            snake.forEach(part => { if (part.x == foodX && part.y == foodY) generateFood(); });
+        }
+
+        function hasGameEnded() {
+            for (let i = 4; i < snake.length; i++) {
+                if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
+            }
+            return snake[0].x < 0 || snake[0].x >= canvas.width || snake[0].y < 0 || snake[0].y >= canvas.height;
+        }
+
+        function showGameOver() {
+            isGameOverState = true;
+            stopBGM(); 
+            playSound('die'); 
+            
+            document.getElementById("finalScore").innerText = score;
+            document.getElementById("gameOverScreen").style.display = "flex";
+            
+            chargerClassement();
+
+            setTimeout(() => {
+                if (score > 0) {
+                    let playerName = prompt("FIN DE SERVICE ! 🛒\nEntrez vos initiales (max 10 lettres) :", "EMPLOYE");
+                    if (playerName && playerName.trim() !== "") {
+                        playerName = playerName.trim().substring(0, 10).toUpperCase();
+                        envoyerScore(playerName, score);
+                    }
+                }
+            }, 300);
+        }
+
+        function updateHighScoreDisplay() {
+            let highest = top10.length > 0 ? top10[0].score : 0;
+            document.getElementById("highScoreDisplay").innerHTML = "TOP 1: " + highest;
+        }
+
+        function renderLeaderboard() {
+            const listElement = document.getElementById("leaderboardList");
+            listElement.innerHTML = ""; 
+
+            if (top10.length === 0) {
+                listElement.innerHTML = "<li style='text-align:center; color:#999;'>Aucune donnée</li>";
+                return;
+            }
+
+            top10.forEach((entry, index) => {
+                const li = document.createElement("li");
+                li.className = "leaderboard-entry";
+                li.innerHTML = `
+                    <span class="rank">#${index + 1}</span>
+                    <span class="name">${entry.name}</span>
+                    <span class="score">${entry.score}</span>
+                `;
+                listElement.appendChild(li);
+            });
+        }
+
+        function resetGame() {
+            clearTimeout(gameLoopTimeout);
+            initGame();
+        }
+
+        // --- CONTRÔLES ---
+        document.addEventListener("keydown", function(event) {
+            if (!gameStarted && event.key === "Enter") { startGame(); return; }
+            if (event.key === "Enter" && isGameOverState) { resetGame(); return; }
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(event.key) > -1) event.preventDefault();
+            handleDirection(event.keyCode);
+        });
+
+        let touchStartX = 0, touchStartY = 0;
+        
+        document.addEventListener('touchstart', function(event) {
+            if (!gameStarted || isGameOverState) return;
+            touchStartX = event.changedTouches[0].screenX;
+            touchStartY = event.changedTouches[0].screenY;
+        }, {passive: false});
+
+        document.addEventListener('touchmove', function(event) {
+            if(gameStarted && !isGameOverState) event.preventDefault();
+        }, {passive: false});
+
+        document.addEventListener('touchend', function(event) {
+            if (!gameStarted || isGameOverState) return;
+            handleSwipe(touchStartX, touchStartY, event.changedTouches[0].screenX, event.changedTouches[0].screenY);
+        }, {passive: false});
+
+        function handleSwipe(startX, startY, endX, endY) {
+            let diffX = endX - startX, diffY = endY - startY;
+            if (Math.abs(diffX) < 30 && Math.abs(diffY) < 30) return;
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 0) handleDirection(39); else handleDirection(37);
+            } else {
+                if (diffY > 0) handleDirection(40); else handleDirection(38);
+            }
+        }
+
+        function handleDirection(keyCode) {
+            const LEFT_KEY = 37, RIGHT_KEY = 39, UP_KEY = 38, DOWN_KEY = 40;
+            const goingUp = dy === -gridSize, goingDown = dy === gridSize, goingRight = dx === gridSize, goingLeft = dx === -gridSize;
+            if (keyCode === LEFT_KEY && !goingRight) { dx = -gridSize; dy = 0; }
+            if (keyCode === UP_KEY && !goingDown) { dx = 0; dy = -gridSize; }
+            if (keyCode === RIGHT_KEY && !goingLeft) { dx = gridSize; dy = 0; }
+            if (keyCode === DOWN_KEY && !goingUp) { dx = 0; dy = gridSize; }
+        }
+        
+        clearCanvas();
+        drawGrid();
+
+    </script>
+</body>
+</html>
