@@ -199,6 +199,7 @@
                 </ul>
             </div>
 
+            <button id="leaderboardBtn" onclick="chargerClassement()">Actualiser Classement</button>
             <button onclick="resetGame()">Rejouer</button>
         </div>
     </div>
@@ -516,30 +517,21 @@
             playSound('die'); 
             
             document.getElementById("finalScore").innerText = score;
+            document.getElementById("gameOverScreen").style.display = "flex";
             
-            // Vérifier si le score entre dans le top 10 mondial
-            let qualifiesForTop10 = false;
-            if (score > 0) {
-                if (top10.length < 10) {
-                    qualifiesForTop10 = true;
-                } else if (score > top10[top10.length - 1].score) {
-                    qualifiesForTop10 = true;
-                }
-            }
+            // Rafraîchir le classement affiché
+            chargerClassement();
 
+            // Demande d'enregistrement automatique du score dès la fin de la partie
             setTimeout(() => {
-                if (qualifiesForTop10) {
-                    let playerName = prompt("NOUVEAU RECORD ! 🎉\nEntrez vos initiales (3 lettres) :", "AAA");
-                    if (!playerName || playerName.trim() === "") playerName = "ANO";
-                    playerName = playerName.substring(0, 3).toUpperCase();
-
-                    // Envoi du score à l'API Cloudflare
-                    envoyerScore(playerName, score);
-                } else {
-                    renderLeaderboard();
+                if (score > 0) {
+                    let playerName = prompt("FIN DE PARTIE ! 🎉\nEntrez vos initiales (3 lettres) :", "AAA");
+                    if (playerName && playerName.trim() !== "") {
+                        playerName = playerName.substring(0, 3).toUpperCase();
+                        envoyerScore(playerName, score);
+                    }
                 }
-                document.getElementById("gameOverScreen").style.display = "flex";
-            }, 100);
+            }, 300);
         }
 
         function updateHighScoreDisplay() {
@@ -552,7 +544,7 @@
             listElement.innerHTML = ""; 
 
             if (top10.length === 0) {
-                listElement.innerHTML = "<li style='text-align:center; color:#888;'>Chargement...</li>";
+                listElement.innerHTML = "<li style='text-align:center; color:#888;'>Aucun score enregistré</li>";
                 return;
             }
 
