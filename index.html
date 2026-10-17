@@ -21,6 +21,7 @@
                         'space': ['Orbitron', 'sans-serif'],
                         'neon': ['Segoe UI', 'Tahoma', 'sans-serif'],
                         'superu': ['Montserrat', 'sans-serif'],
+                        'biere': ['Montserrat', 'sans-serif'],
                     }
                 }
             }
@@ -44,6 +45,9 @@
         .superu-text {
             text-shadow: 2px 2px 0px #ffffff, 4px 4px 0px rgba(0, 85, 164, 0.2);
         }
+        .biere-text {
+            text-shadow: 2px 2px 0px #000000, 4px 4px 0px rgba(241, 196, 15, 0.3);
+        }
 
         /* Animation douce de type "nuage" / flottement */
         @keyframes cloudFloat {
@@ -57,10 +61,12 @@
         }
 
         /* Décalage des animations pour un effet vivant et naturel */
-        .cloud-card:nth-child(2) { animation-delay: 0.8s; }
-        .cloud-card:nth-child(3) { animation-delay: 1.6s; }
-        .cloud-card:nth-child(4) { animation-delay: 2.4s; }
-        .cloud-card:nth-child(5) { animation-delay: 3.2s; }
+        .cloud-card:nth-child(1) { animation-delay: 0s; }
+        .cloud-card:nth-child(2) { animation-delay: 0.5s; }
+        .cloud-card:nth-child(3) { animation-delay: 1.0s; }
+        .cloud-card:nth-child(4) { animation-delay: 1.5s; }
+        .cloud-card:nth-child(5) { animation-delay: 2.0s; }
+        .cloud-card:nth-child(6) { animation-delay: 2.5s; }
 
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -106,19 +112,19 @@
 
         </div>
 
-        <!-- ENCADRÉ CENTRAL : Mention du classement unique pour les 5 styles -->
+        <!-- ENCADRÉ CENTRAL : Mention du classement unique pour les 6 styles -->
         <div class="w-full max-w-2xl my-3 px-6 py-4 bg-slate-800/90 border-2 border-cyan-500/50 rounded-2xl shadow-[0_0_20px_rgba(0,229,255,0.2)] text-center backdrop-blur-md">
             <div class="text-2xl mb-1">🏆</div>
             <p class="text-cyan-300 font-bold text-sm sm:text-base tracking-wide uppercase">
                 Attention : Un seul et unique classement partagé !
             </p>
             <p class="text-slate-300 text-xs sm:text-sm mt-1">
-                Peu importe le style de jeu que tu choisis parmi les 5 univers, tes scores s'additionnent et s'enregistrent dans le même classement général !
+                Peu importe le style de jeu que tu choisis parmi les 6 univers, tes scores s'additionnent et s'enregistrent dans le même classement général !
             </p>
         </div>
 
-        <!-- Grille inférieure (3 cartes : Néon, Galaxy, Super U) -->
-        <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mt-6">
+        <!-- Grille inférieure (4 cartes : Néon, Galaxy, Super U, Biéro-Man 2) -->
+        <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mt-6">
             
             <!-- CARTE : NÉON EDITION -->
             <a href="index_Néon.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-cyan-400 rounded-2xl">
@@ -149,9 +155,18 @@
                 </div>
             </a>
 
+            <!-- CARTE : BIÉRO-MAN SIMULATOR 2 (NOUVEAU) -->
+            <a href="index_tourner_2.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-amber-400 rounded-2xl">
+                <div class="h-full bg-gradient-to-br from-[#2b1d0c] to-[#3e2714] border-2 border-[#f39c12] rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-[0_5px_15px_rgba(243,156,18,0.3)]">
+                    <div class="text-4xl mb-2">🍺 🍻</div>
+                    <h2 class="font-biere biere-text text-xl text-[#f1c40f] font-black uppercase tracking-wider mb-1">Biéro-Man 2</h2>
+                    <p class="font-biere text-[#e74c3c] text-xs font-extrabold uppercase tracking-widest">Tournée</p>
+                </div>
+            </a>
+
         </div>
 
-        <!-- MESSAGE ET BOUTON DE SUGGESTION DE STYLE (SOUS LES 3 DERNIERS JEUX) -->
+        <!-- MESSAGE ET BOUTON DE SUGGESTION DE STYLE -->
         <div class="w-full max-w-xl mt-8 text-center px-4 py-5 bg-slate-800/60 border border-slate-700 rounded-2xl backdrop-blur-sm flex flex-col items-center">
             <p class="text-slate-300 text-sm sm:text-base font-medium mb-3">
                 Tu souhaites un autre style ? Dis-le-nous !

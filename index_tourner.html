@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Biéro-Man Simulator</title>
+    
+    <!-- Police rétro / arcade fun -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding-top: 5px;
+            /* Fond ambiance pub / bois chaleureux */
+            background-color: #2b1d0c; 
+            color: #f39c12; /* Jaune bière */
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden; 
+            touch-action: none; 
+            box-sizing: border-box;
+        }
+
+        #authorCredits {
+            font-size: 14px;
+            color: #e74c3c; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+
+        #gameTitle {
+            font-size: clamp(18px, 5vw, 30px); 
+            white-space: nowrap; 
+            margin: 0 0 10px 0;
+            color: #f1c40f;
+            text-shadow: 2px 2px 0px #000000, 4px 4px 0px rgba(241, 196, 15, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            font-weight: 900;
+        }
+
+        .beer-yellow {
+            color: #f39c12;
+        }
+
+        #scoreboard {
+            display: flex;
+            gap: 30px;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: #ffffff;
+            background: #d35400;
+            padding: 8px 25px;
+            border-radius: 30px;
+            border: 3px solid #f1c40f;
+            box-shadow: 0 5px 15px rgba(211, 84, 0, 0.4);
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 100%;
+            max-width: 95vw;
+            max-height: calc(100vh - 140px);
+            aspect-ratio: 1080 / 1440; 
+            margin: 0 auto; 
+        }
+
+        canvas {
+            /* Sol effet bois clair / table de pub */
+            background-color: #deb887; 
+            border: 5px solid #d35400;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4); 
+            width: 100%; 
+            height: 100%; 
+            display: block;
+            object-fit: contain; 
+        }
+
+        .overlayScreen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(43, 29, 12, 0.92); 
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            color: #f39c12;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 3px solid #f1c40f;
+        }
+
+        #startScreen { z-index: 10; }
+        
+        #gameOverScreen {
+            display: none;
+            z-index: 5;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h1.cheh-title {
+            font-size: 38px;
+            margin: 0;
+            color: #e74c3c;
+            text-shadow: 2px 2px 0px #000000, 4px 4px 0px rgba(231, 76, 60, 0.3);
+            letter-spacing: 2px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .overlayScreen p.score-text {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 10px 0;
+            background: #d35400;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        #leaderboardContainer {
+            background: #3e2714;
+            border: 3px solid #f1c40f;
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.2);
+            width: 85%;
+            max-width: 280px;
+            max-height: 180px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        #leaderboardContainer h3 {
+            margin: 0 0 8px 0;
+            color: #f1c40f;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        .leaderboard-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px; 
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            border-bottom: 2px dotted #5c3a21;
+            padding-bottom: 4px;
+        }
+
+        .leaderboard-entry .rank { color: #f1c40f; width: 25px;}
+        .leaderboard-entry .name { color: #ffffff; max-width: 120px; overflow: hidden;}
+        .leaderboard-entry .score { color: #e74c3c; font-weight: 900; }
+
+        button {
+            margin-top: 10px;
+            padding: 12px 0;
+            width: 80%;
+            max-width: 240px;
+            font-size: 16px;
+            background-color: #f39c12;
+            color: #2b1d0c;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 0px #b7950b, 0 10px 15px rgba(243, 156, 18, 0.4);
+            transition: all 0.1s;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-family: inherit;
+            letter-spacing: 1px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        button:hover, button:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0px #b7950b, 0 4px 5px rgba(243, 156, 18, 0.4);
+            background-color: #f1c40f;
+        }
+
+        @media (max-width: 400px) {
+            #authorCredits { font-size: 12px; }
+            #scoreboard { font-size: 16px; gap: 15px; }
+            h1.cheh-title { font-size: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="authorCredits">🍻 Biéro-Man Simulator 🍻</div>
+
+    <h1 id="gameTitle">TOURNEE <span class="beer-yellow">GENERALE !</span></h1>
+
+    <div id="scoreboard">
+        <div id="scoreDisplay">BIÈRES: 0</div>
+        <div id="highScoreDisplay">TOP 1: 0</div>
+    </div>
+    
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="1080" height="1440"></canvas>
+        
+        <div id="startScreen" class="overlayScreen">
+            <h2 style="color: #f1c40f; font-size: 26px; text-transform: uppercase; font-weight: 900;">Prêt à lever le coude ? 🍺</h2>
+            <button onclick="startGame()">Entrer au Pub</button>
+        </div>
+
+        <div id="gameOverScreen" class="overlayScreen">
+            <h1 class="cheh-title">GUEULE DE BOIS !</h1>
+            <p class="score-text">Bières avalées : <span id="finalScore" style="color:#f1c40f;">0</span></p>
+            
+            <div id="leaderboardContainer">
+                <h3>Les Plus Gros Buveurs</h3>
+                <ul id="leaderboardList" class="leaderboard-entry">
+                    <li>Chargement...</li>
+                </ul>
+            </div>
+
+            <button onclick="chargerClassement()">Actualiser</button>
+            <button onclick="resetGame()">Recommander une tournée</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let vitesseJeu = 160; 
+        let score = 0;
+        let top10 = [];
+
+        async function chargerClassement() {
+            try {
+                const reponse = await fetch('/api');
+                const data = await reponse.json();
+                if (Array.isArray(data)) {
+                    top10 = data;
+                    updateHighScoreDisplay();
+                    renderLeaderboard();
+                }
+            } catch (e) {
+                console.error("Erreur de chargement du classement :", e);
+            }
+        }
+
+        async function envoyerScore(nom, scoreFinal) {
+            try {
+                const reponse = await fetch('/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: nom, score: scoreFinal })
+                });
+                const data = await reponse.json();
+                if (Array.isArray(data)) {
+                    top10 = data;
+                    updateHighScoreDisplay();
+                    renderLeaderboard();
+                }
+            } catch (e) {
+                console.error("Erreur d'envoi du score :", e);
+            }
+        }
+
+        chargerClassement();
+
+        let gridSize = 40; 
+        let dx = gridSize;
+        let dy = 0;
+        let snake = [];
+        let foodX;
+        let foodY;
+        let isGameOverState = false;
+        let gameLoopTimeout;
+        let gameStarted = false;
+        let particles = [];
+
+        let audioCtx;
+        let bgmInterval;
+        let currentNoteIndex = 0;
+        // Ambiance musicale festive de pub
+        const melody = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63];
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (type === 'drink') {
+                // Son "Glou-glou" / "Cheers"
+                osc.type = 'triangle'; 
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.15); 
+                gainNode.gain.setValueAtTime(0.2, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } else if (type === 'die') {
+                // Son de chute / malaise
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.5); 
+                gainNode.gain.setValueAtTime(0.3, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        }
+
+        function playBGMNote() {
+            if (!audioCtx || isGameOverState) return;
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            
+            osc.type = 'sine'; 
+            osc.frequency.value = melody[currentNoteIndex];
+            
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.03, now + 0.05); 
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3); 
+            
+            osc.start(now);
+            osc.stop(now + 0.35);
+            
+            currentNoteIndex = (currentNoteIndex + 1) % melody.length;
+        }
+
+        function startBGM() {
+            if(bgmInterval) clearInterval(bgmInterval);
+            currentNoteIndex = 0;
+            bgmInterval = setInterval(playBGMNote, 500); 
+        }
+
+        function stopBGM() {
+            if(bgmInterval) clearInterval(bgmInterval);
+        }
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = "none";
+            initAudio();
+            gameStarted = true;
+            initGame();
+        }
+
+        function initGame() {
+            score = 0;
+            dx = gridSize;
+            dy = 0;
+            isGameOverState = false;
+            particles = [];
+            document.getElementById('scoreDisplay').innerHTML = "BIÈRES: " + score;
+            document.getElementById('gameOverScreen').style.display = "none";
+            
+            snake = [];
+            for(let i=0; i<5; i++){ 
+                snake.push({x: 520 - (i*gridSize), y: 720});
+            }
+
+            generateFood();
+            startBGM(); 
+            main();
+        }
+
+        function main() {
+            if (hasGameEnded()) {
+                showGameOver();
+                return;
+            }
+            gameLoopTimeout = setTimeout(function onTick() {
+                clearCanvas();
+                drawPubBackground();
+                updateParticles();
+                drawParticles();
+                drawFood(); // La bière posée
+                advanceSnake(); // Le buveur avance
+                drawSnake(); // Le bonhomme et sa file d'amis pochtrons
+                main();
+            }, vitesseJeu); 
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawPubBackground() {
+            // Effet planches de bois du comptoir
+            ctx.strokeStyle = "#c89d6e"; 
+            ctx.lineWidth = 3;
+            for (let i = 0; i < canvas.width; i += gridSize * 2) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            }
+            for (let i = 0; i < canvas.height; i += gridSize * 2) {
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+            }
+        }
+
+        function createBubbles(x, y) {
+            // Éclaboussures de mousse de bière dorée/blanche
+            const colors = ['#ffffff', '#f1c40f', '#f39c12', '#fdfefe'];
+            for (let i = 0; i < 20; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 7 + 2;
+                particles.push({
+                    x: x + gridSize / 2, y: y + gridSize / 2,
+                    vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1, life: Math.random() * 12 + 8,
+                    size: Math.random() * 6 + 3
+                });
+            }
+        }
+
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx; p.y += p.vy;
+                p.vx *= 0.85; p.vy *= 0.85; 
+                p.alpha -= 1 / p.life;
+                p.size *= 0.93; 
+                if (p.alpha <= 0 || p.size < 0.5) particles.splice(i, 1);
+            }
+        }
+
+        function drawParticles() {
+            particles.forEach(p => {
+                ctx.save();
+                ctx.globalAlpha = p.alpha; 
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+        }
+
+        function drawSnake() {
+            for(let i = snake.length - 1; i >= 0; i--) drawSnakePart(snake[i], i);
+        }
+
+        function drawSnakePart(snakePart, index) {
+            if (index === 0) {
+                // TÊTE DU BUVEUR
+                ctx.fillStyle = "#e67e22"; // Visage / T-shirt
+                ctx.beginPath();
+                ctx.roundRect(snakePart.x + 3, snakePart.y + 3, gridSize - 6, gridSize - 6, 12);
+                ctx.fill();
+                ctx.strokeStyle = "#a04000";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Chapeau ou verres fumés / yeux éméchés
+                ctx.fillStyle = "#ffffff";
+                ctx.beginPath();
+                ctx.arc(snakePart.x + 13, snakePart.y + 15, 5, 0, Math.PI * 2);
+                ctx.arc(snakePart.x + 27, snakePart.y + 15, 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = "#000000";
+                ctx.beginPath();
+                ctx.arc(snakePart.x + 13, snakePart.y + 15, 2, 0, Math.PI * 2);
+                ctx.arc(snakePart.x + 27, snakePart.y + 15, 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Bouche souriante
+                ctx.strokeStyle = "#900c3f";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(snakePart.x + 20, snakePart.y + 25, 6, 0, Math.PI);
+                ctx.stroke();
+
+            } else {
+                // LE CORPS (LES AMIS POCHTRONS QUI SUIVENT)
+                ctx.fillStyle = "#d35400"; 
+                ctx.beginPath();
+                ctx.arc(snakePart.x + gridSize/2, snakePart.y + gridSize/2, gridSize/2 - 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = "#a04000";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+
+        function advanceSnake() {
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            snake.unshift(head); 
+            if (snake[0].x === foodX && snake[0].y === foodY) {
+                score += 1; // 1 bière = 1 point, et le serpent grandit (le poids / les buveurs s'accumulent)
+                document.getElementById('scoreDisplay').innerHTML = "BIÈRES: " + score;
+                playSound('drink'); 
+                createBubbles(foodX, foodY); 
+                generateFood();
+            } else {
+                snake.pop(); 
+            }
+        }
+
+        function drawFood() {
+            // LA BIÈRE (Chope de bière dorée avec sa mousse blanche)
+            const cx = foodX + gridSize / 2;
+            const cy = foodY + gridSize / 2;
+            
+            // Corps du verre
+            ctx.fillStyle = "#f1c40f"; // Bière dorée
+            ctx.fillRect(cx - 10, cy - 6, 20, 18);
+
+            // Mousse blanche par-dessus
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.arc(cx - 5, cy - 8, 6, 0, Math.PI * 2);
+            ctx.arc(cx + 5, cy - 8, 6, 0, Math.PI * 2);
+            ctx.arc(cx, cy - 10, 7, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Anse de la chope
+            ctx.strokeStyle = "#d35400";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(cx + 12, cy + 2, 6, -Math.PI/2, Math.PI/2);
+            ctx.stroke();
+        }
+
+        function randomTen(min, max) { return Math.round((Math.random() * (max - min) + min) / gridSize) * gridSize; }
+        
+        function generateFood() {
+            foodX = randomTen(0, canvas.width - gridSize); 
+            foodY = randomTen(0, canvas.height - gridSize);
+            snake.forEach(part => { if (part.x == foodX && part.y == foodY) generateFood(); });
+        }
+
+        function hasGameEnded() {
+            for (let i = 4; i < snake.length; i++) {
+                if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
+            }
+            return snake[0].x < 0 || snake[0].x >= canvas.width || snake[0].y < 0 || snake[0].y >= canvas.height;
+        }
+
+        function showGameOver() {
+            isGameOverState = true;
+            stopBGM(); 
+            playSound('die'); 
+            
+            document.getElementById("finalScore").innerText = score;
+            document.getElementById("gameOverScreen").style.display = "flex";
+            
+            chargerClassement();
+
+            setTimeout(() => {
+                let playerName = prompt("FIN DE SOIRÉE ! 🍻\nEntrez votre pseudo de pilier de bar :", "POCHTRON");
+                if (playerName && playerName.trim() !== "") {
+                    playerName = playerName.trim().substring(0, 10).toUpperCase();
+                    envoyerScore(playerName, score);
+                }
+            }, 300);
+        }
+
+        function updateHighScoreDisplay() {
+            let highest = top10.length > 0 ? top10[0].score : 0;
+            document.getElementById("highScoreDisplay").innerHTML = "TOP 1: " + highest;
+        }
+
+        function renderLeaderboard() {
+            const listElement = document.getElementById("leaderboardList");
+            listElement.innerHTML = ""; 
+
+            if (top10.length === 0) {
+                listElement.innerHTML = "<li style='text-align:center; color:#999;'>Aucun client</li>";
+                return;
+            }
+
+            top10.forEach((entry, index) => {
+                const li = document.createElement("li");
+                li.className = "leaderboard-entry";
+                li.innerHTML = `
+                    <span class="rank">#${index + 1}</span>
+                    <span class="name">${entry.name}</span>
+                    <span class="score">${entry.score} 🍺</span>
+                `;
+                listElement.appendChild(li);
+            });
+        }
+
+        function resetGame() {
+            clearTimeout(gameLoopTimeout);
+            initGame();
+        }
+
+        // --- CONTRÔLES ---
+        document.addEventListener("keydown", function(event) {
+            if (!gameStarted && event.key === "Enter") { startGame(); return; }
+            if (event.key === "Enter" && isGameOverState) { resetGame(); return; }
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(event.key) > -1) event.preventDefault();
+            handleDirection(event.keyCode);
+        });
+
+        let touchStartX = 0, touchStartY = 0;
+        
+        document.addEventListener('touchstart', function(event) {
+            if (!gameStarted || isGameOverState) return;
+            touchStartX = event.changedTouches[0].screenX;
+            touchStartY = event.changedTouches[0].screenY;
+        }, {passive: false});
+
+        document.addEventListener('touchmove', function(event) {
+            if(gameStarted && !isGameOverState) event.preventDefault();
+        }, {passive: false});
+
+        document.addEventListener('touchend', function(event) {
+            if (!gameStarted || isGameOverState) return;
+            handleSwipe(touchStartX, touchStartY, event.changedTouches[0].screenX, event.changedTouches[0].screenY);
+        }, {passive: false});
+
+        function handleSwipe(startX, startY, endX, endY) {
+            let diffX = endX - startX, diffY = endY - startY;
+            if (Math.abs(diffX) < 30 && Math.abs(diffY) < 30) return;
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 0) handleDirection(39); else handleDirection(37);
+            } else {
+                if (diffY > 0) handleDirection(40); else handleDirection(38);
+            }
+        }
+
+        function handleDirection(keyCode) {
+            const LEFT_KEY = 37, RIGHT_KEY = 39, UP_KEY = 38, DOWN_KEY = 40;
+            const goingUp = dy === -gridSize, goingDown = dy === gridSize, goingRight = dx === gridSize, goingLeft = dx === -gridSize;
+            if (keyCode === LEFT_KEY && !goingRight) { dx = -gridSize; dy = 0; }
+            if (keyCode === UP_KEY && !goingDown) { dx = 0; dy = -gridSize; }
+            if (keyCode === RIGHT_KEY && !goingLeft) { dx = gridSize; dy = 0; }
+            if (keyCode === DOWN_KEY && !goingUp) { dx = 0; dy = gridSize; }
+        }
+        
+        clearCanvas();
+        drawPubBackground();
+
+    </script>
+</body>
+</html>
