@@ -86,9 +86,20 @@
         <p class="text-sm sm:text-base text-slate-400">Choisis ton univers et lance la partie !</p>
     </header>
 
-    <!-- SECTION CENTRALE : Les cartes organisées autour du texte de classement -->
+    <!-- SECTION CENTRALE -->
     <main class="w-full max-w-5xl my-6 flex flex-col items-center">
         
+        <!-- ENCADRÉ DU CLASSEMENT UNIQUE (REMONTÉ TOUT EN HAUT) -->
+        <div class="w-full max-w-2xl mb-8 px-6 py-4 bg-slate-800/90 border-2 border-cyan-500/50 rounded-2xl shadow-[0_0_20px_rgba(0,229,255,0.2)] text-center backdrop-blur-md">
+            <div class="text-2xl mb-1">🏆</div>
+            <p class="text-cyan-300 font-bold text-sm sm:text-base tracking-wide uppercase">
+                Attention : Un seul et unique classement partagé !
+            </p>
+            <p class="text-slate-300 text-xs sm:text-sm mt-1">
+                Peu importe le style de jeu que tu choisis parmi les 6 univers, tes scores s'additionnent et s'enregistrent dans le même classement général !
+            </p>
+        </div>
+
         <!-- Grille supérieure (2 cartes) -->
         <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mb-6">
             
@@ -112,19 +123,8 @@
 
         </div>
 
-        <!-- ENCADRÉ CENTRAL : Mention du classement unique pour les 6 styles -->
-        <div class="w-full max-w-2xl my-3 px-6 py-4 bg-slate-800/90 border-2 border-cyan-500/50 rounded-2xl shadow-[0_0_20px_rgba(0,229,255,0.2)] text-center backdrop-blur-md">
-            <div class="text-2xl mb-1">🏆</div>
-            <p class="text-cyan-300 font-bold text-sm sm:text-base tracking-wide uppercase">
-                Attention : Un seul et unique classement partagé !
-            </p>
-            <p class="text-slate-300 text-xs sm:text-sm mt-1">
-                Peu importe le style de jeu que tu choisis parmi les 6 univers, tes scores s'additionnent et s'enregistrent dans le même classement général !
-            </p>
-        </div>
-
         <!-- Grille inférieure (4 cartes : Néon, Galaxy, Super U, Biéro-Man 2) -->
-        <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mt-6">
+        <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mt-2">
             
             <!-- CARTE : NÉON EDITION -->
             <a href="index_Néon.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-cyan-400 rounded-2xl">
@@ -155,7 +155,7 @@
                 </div>
             </a>
 
-            <!-- CARTE : BIÉRO-MAN SIMULATOR 2 (NOUVEAU) -->
+            <!-- CARTE : BIÉRO-MAN SIMULATOR 2 -->
             <a href="index_tourner_2.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-amber-400 rounded-2xl">
                 <div class="h-full bg-gradient-to-br from-[#2b1d0c] to-[#3e2714] border-2 border-[#f39c12] rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-[0_5px_15px_rgba(243,156,18,0.3)]">
                     <div class="text-4xl mb-2">🍺 🍻</div>
