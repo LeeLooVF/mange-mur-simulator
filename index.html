@@ -28,7 +28,7 @@
     </script>
 
     <style>
-        /* Effets spécifiques impossibles ou trop complexes avec de simples classes Tailwind */
+        /* Effets spécifiques et animations */
         .neon-text {
             text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff, 0 0 30px #ff007f;
         }
@@ -45,77 +45,115 @@
             text-shadow: 2px 2px 0px #ffffff, 4px 4px 0px rgba(0, 85, 164, 0.2);
         }
 
-        /* Animation de fond pour le hub */
+        /* Animation douce de type "nuage" / flottement */
+        @keyframes cloudFloat {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(0.5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .cloud-card {
+            animation: cloudFloat 4s ease-in-out infinite;
+        }
+
+        /* Décalage des animations pour un effet vivant et naturel */
+        .cloud-card:nth-child(2) { animation-delay: 0.8s; }
+        .cloud-card:nth-child(3) { animation-delay: 1.6s; }
+        .cloud-card:nth-child(4) { animation-delay: 2.4s; }
+        .cloud-card:nth-child(5) { animation-delay: 3.2s; }
+
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            touch-action: manipulation; /* Optimisation tactile */
+            touch-action: manipulation;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 text-slate-100 selection:bg-pink-500 selection:text-white">
+<body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-8 text-slate-100 selection:bg-pink-500 selection:text-white">
 
-    <header class="text-center mb-8 mt-4">
-        <div class="inline-block px-4 py-1 mb-3 rounded-full bg-slate-800 border border-slate-700 text-sm font-semibold tracking-widest text-slate-400 uppercase">
+    <header class="text-center mt-4">
+        <div class="inline-block px-4 py-1 mb-2 rounded-full bg-slate-800 border border-slate-700 text-sm font-semibold tracking-widest text-slate-400 uppercase">
             Sélecteur de version
         </div>
         <h1 class="text-4xl sm:text-5xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">
             Mange-Mur Simulator
         </h1>
-        <p class="text-lg text-slate-400">Choisis ton univers et lance la partie !</p>
+        <p class="text-sm sm:text-base text-slate-400">Choisis ton univers et lance la partie !</p>
     </header>
 
-    <main class="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+    <!-- SECTION CENTRALE : Les cartes organisées autour du texte de classement -->
+    <main class="w-full max-w-5xl my-6 flex flex-col items-center">
         
-        <!-- CARTE : CACA EDITION -->
-        <a href="index_caca.html" class="block w-full outline-none transform transition-all duration-200 hover:-translate-y-1 active:translate-y-2 focus:ring-4 focus:ring-amber-500 rounded-3xl">
-            <div class="h-full bg-gradient-to-br from-[#4a3320] to-[#1f140a] border-4 border-[#8b4513] rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[0_8px_0_#2e1c11] active:shadow-[0_0px_0_#2e1c11]">
-                <div class="text-5xl mb-3">💩 🍔</div>
-                <h2 class="font-caca caca-text text-3xl sm:text-4xl text-[#8b4513] uppercase tracking-wide mb-2">Caca Edition</h2>
-                <p class="font-caca text-[#ffcc00] text-xl tracking-wider opacity-90">Pour les grosses faims !</p>
-            </div>
-        </a>
+        <!-- Grille supérieure (2 cartes) -->
+        <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mb-6">
+            
+            <!-- CARTE : CACA EDITION -->
+            <a href="index_caca.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-amber-500 rounded-3xl">
+                <div class="h-full bg-gradient-to-br from-[#4a3320] to-[#1f140a] border-4 border-[#8b4513] rounded-3xl p-6 flex flex-col items-center justify-center text-center shadow-[0_8px_0_#2e1c11]">
+                    <div class="text-4xl mb-2">💩 🍔</div>
+                    <h2 class="font-caca caca-text text-3xl text-[#8b4513] uppercase tracking-wide mb-1">Caca Edition</h2>
+                    <p class="font-caca text-[#ffcc00] text-lg tracking-wider opacity-90">Pour les grosses faims !</p>
+                </div>
+            </a>
 
-        <!-- CARTE : HELLO KITTY EDITION -->
-        <a href="index_Kitty.html" class="block w-full outline-none transform transition-all duration-200 hover:-translate-y-1 active:translate-y-2 focus:ring-4 focus:ring-pink-400 rounded-[40px]">
-            <div class="h-full bg-[#ffe6f2] border-4 border-[#ff99c2] rounded-[40px] p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[0_8px_0_#ffb3d9] active:shadow-[0_0px_0_#ffb3d9]">
-                <div class="text-5xl mb-3 drop-shadow-md">🎀 🌸</div>
-                <h2 class="font-kitty kitty-text text-3xl sm:text-4xl text-[#ff1493] uppercase tracking-wide mb-2">Kitty Edition</h2>
-                <p class="font-kitty text-[#d10056] text-lg font-semibold opacity-80">Mignon et rose !</p>
-            </div>
-        </a>
+            <!-- CARTE : HELLO KITTY EDITION -->
+            <a href="index_Kitty.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-pink-400 rounded-[40px]">
+                <div class="h-full bg-[#ffe6f2] border-4 border-[#ff99c2] rounded-[40px] p-6 flex flex-col items-center justify-center text-center shadow-[0_8px_0_#ffb3d9]">
+                    <div class="text-4xl mb-2 drop-shadow-md">🎀 🌸</div>
+                    <h2 class="font-kitty kitty-text text-3xl text-[#ff1493] uppercase tracking-wide mb-1">Kitty Edition</h2>
+                    <p class="font-kitty text-[#d10056] text-base font-semibold opacity-80">Mignon et rose !</p>
+                </div>
+            </a>
 
-        <!-- CARTE : NÉON EDITION -->
-        <a href="index_Néon.html" class="block w-full outline-none transform transition-all duration-200 hover:-translate-y-1 active:translate-y-1 focus:ring-4 focus:ring-cyan-400 rounded-2xl">
-            <div class="h-full bg-[#070810] border-2 border-[#00e5ff] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[0_0_20px_rgba(0,229,255,0.4)] active:shadow-[0_0_5px_rgba(0,229,255,0.8)] relative overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-b from-[rgba(0,229,255,0.1)] to-transparent pointer-events-none"></div>
-                <div class="text-5xl mb-3 drop-shadow-[0_0_10px_#ff007f]">⚡ 🕹️</div>
-                <h2 class="font-neon neon-text text-2xl sm:text-3xl text-white font-bold uppercase tracking-widest mb-2">Néon Edition</h2>
-                <p class="font-neon text-[#ffb3d9] text-sm font-bold uppercase tracking-[0.2em]">Ambiance Arcade</p>
-            </div>
-        </a>
+        </div>
 
-        <!-- CARTE : GALAXY EDITION -->
-        <a href="index_Space.html" class="block w-full outline-none transform transition-all duration-200 hover:-translate-y-1 active:translate-y-1 focus:ring-4 focus:ring-purple-500 rounded-2xl">
-            <div class="h-full bg-gradient-to-br from-[#1b0033] to-[#050011] border-2 border-[#b026ff] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[0_0_25px_rgba(176,38,255,0.4)] active:shadow-[0_0_10px_rgba(176,38,255,0.8)] relative overflow-hidden">
-                <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 4px); background-size: 50px 50px; pointer-events-none;"></div>
-                <div class="text-5xl mb-3 drop-shadow-[0_0_10px_#00ffff]">🚀 🌌</div>
-                <h2 class="font-space space-text text-2xl sm:text-3xl text-white font-black uppercase tracking-widest mb-2">Galaxy Edition</h2>
-                <p class="font-space text-[#b026ff] text-sm font-bold uppercase tracking-widest">Voyage Cosmique</p>
-            </div>
-        </a>
+        <!-- ENCADRÉ CENTRAL : Mention du classement unique pour les 5 styles -->
+        <div class="w-full max-w-2xl my-3 px-6 py-4 bg-slate-800/90 border-2 border-cyan-500/50 rounded-2xl shadow-[0_0_20px_rgba(0,229,255,0.2)] text-center backdrop-blur-md">
+            <div class="text-2xl mb-1">🏆</div>
+            <p class="text-cyan-300 font-bold text-sm sm:text-base tracking-wide uppercase">
+                Attention : Un seul et unique classement partagé !
+            </p>
+            <p class="text-slate-300 text-xs sm:text-sm mt-1">
+                Peu importe le style de jeu que tu choisis parmi les 5 univers, tes scores s'additionnent et s'enregistrent dans le même classement général !
+            </p>
+        </div>
 
-        <!-- CARTE : SUPER U EDITION (NOUVEAU) -->
-        <a href="index_SuperU.html" class="block w-full outline-none transform transition-all duration-200 hover:-translate-y-1 active:translate-y-1 focus:ring-4 focus:ring-blue-500 rounded-2xl sm:col-span-2 max-w-lg mx-auto">
-            <div class="h-full bg-gradient-to-br from-[#f4f6f8] to-[#e2e8f0] border-4 border-[#0055A4] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center shadow-[0_8px_0_#003366] active:shadow-[0_0px_0_#003366] relative overflow-hidden">
-                <div class="text-5xl mb-3">🛒 🧼</div>
-                <h2 class="font-superu superu-text text-2xl sm:text-3xl text-[#0055A4] font-black uppercase tracking-wider mb-2">Super U Edition</h2>
-                <p class="font-superu text-[#E30613] text-sm font-extrabold uppercase tracking-widest">Nettoyage de Rayon</p>
-            </div>
-        </a>
+        <!-- Grille inférieure (3 cartes : Néon, Galaxy, Super U) -->
+        <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mt-6">
+            
+            <!-- CARTE : NÉON EDITION -->
+            <a href="index_Néon.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-cyan-400 rounded-2xl">
+                <div class="h-full bg-[#070810] border-2 border-[#00e5ff] rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(0,229,255,0.3)] relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-b from-[rgba(0,229,255,0.1)] to-transparent pointer-events-none"></div>
+                    <div class="text-4xl mb-2 drop-shadow-[0_0_8px_#ff007f]">⚡ 🕹️</div>
+                    <h2 class="font-neon neon-text text-xl text-white font-bold uppercase tracking-widest mb-1">Néon Edition</h2>
+                    <p class="font-neon text-[#ffb3d9] text-xs font-bold uppercase tracking-[0.15em]">Arcade</p>
+                </div>
+            </a>
+
+            <!-- CARTE : GALAXY EDITION -->
+            <a href="index_Space.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-purple-500 rounded-2xl">
+                <div class="h-full bg-gradient-to-br from-[#1b0033] to-[#050011] border-2 border-[#b026ff] rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-[0_0_20px_rgba(176,38,255,0.3)] relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 4px); background-size: 40px 40px; pointer-events-none;"></div>
+                    <div class="text-4xl mb-2 drop-shadow-[0_0_8px_#00ffff]">🚀 🌌</div>
+                    <h2 class="font-space space-text text-xl text-white font-black uppercase tracking-widest mb-1">Galaxy Edition</h2>
+                    <p class="font-space text-[#b026ff] text-xs font-bold uppercase tracking-widest">Cosmique</p>
+                </div>
+            </a>
+
+            <!-- CARTE : SUPER U EDITION -->
+            <a href="index_SuperU.html" class="cloud-card block w-full outline-none transform transition-all duration-200 hover:scale-105 active:scale-95 focus:ring-4 focus:ring-blue-500 rounded-2xl">
+                <div class="h-full bg-gradient-to-br from-[#f4f6f8] to-[#e2e8f0] border-2 border-[#0055A4] rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-[0_5px_15px_rgba(0,85,164,0.2)]">
+                    <div class="text-4xl mb-2">🛒 🧼</div>
+                    <h2 class="font-superu superu-text text-xl text-[#0055A4] font-black uppercase tracking-wider mb-1">Super U</h2>
+                    <p class="font-superu text-[#E30613] text-xs font-extrabold uppercase tracking-widest">Ménage</p>
+                </div>
+            </a>
+
+        </div>
 
     </main>
 
-    <footer class="mt-12 text-center text-slate-500 text-sm font-medium">
+    <footer class="text-center text-slate-500 text-sm font-medium mb-2">
         <p>Créé par Louane 2026</p>
     </footer>
 
