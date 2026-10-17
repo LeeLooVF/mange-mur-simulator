@@ -9,7 +9,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Permet au jeu de s'étirer vers le bas */
+            justify-content: flex-start;
             height: 100vh;
             margin: 0;
             padding-top: 15px;
@@ -40,13 +40,14 @@
             text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
         }
 
-        /* Le conteneur prend tout l'espace restant */
+        /* --- LA CORRECTION EST ICI --- */
         #gameContainer {
             position: relative;
             width: 95vw;
-            flex-grow: 1; /* Magie : s'étire pour remplir l'encadré rouge */
+            flex-grow: 1; /* Prend tout l'espace restant */
+            min-height: 0; /* Empêche le conteneur de déborder hors de l'écran */
             max-width: 600px;
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
         }
 
         canvas {
@@ -55,7 +56,7 @@
             border-radius: 10px;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 255, 255, 0.05);
             width: 100%; 
-            height: 100%;
+            height: 100%; /* S'adapte exactement au conteneur */
             display: block;
         }
 
@@ -103,7 +104,6 @@
             text-shadow: 0 2px 5px rgba(0,0,0,0.8);
         }
 
-        /* --- CLASSEMENT TOP 10 AFFINÉ --- */
         #leaderboardContainer {
             background: rgba(0, 0, 0, 0.8);
             border: 1px solid #ff007f;
@@ -132,7 +132,7 @@
             padding: 0;
             margin: 0;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 12px; /* Texte plus petit pour le mobile */
+            font-size: 12px; 
             text-align: left;
         }
 
@@ -171,7 +171,6 @@
             box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
         }
 
-        /* Ajustements ultimes pour les très petits écrans */
         @media (max-width: 400px) {
             #gameTitle { font-size: 24px; }
             #scoreboard { font-size: 18px; }
@@ -190,16 +189,14 @@
     </div>
     
     <div id="gameContainer">
-        <!-- Canvas redimensionné en mode vertical (Portrait) -->
-        <canvas id="gameCanvas" width="1080" height="1600"></canvas>
+        <!-- Canvas redimensionné pour éviter tout débordement (1080x1280) -->
+        <canvas id="gameCanvas" width="1080" height="1280"></canvas>
         
-        <!-- Écran de Démarrage -->
         <div id="startScreen" class="overlayScreen">
             <h2 style="color: #00e5ff; font-size: 24px; text-shadow: 0 0 10px rgba(0,229,255,0.8);">Prêt à jouer ?</h2>
             <button onclick="startGame()">Démarrer</button>
         </div>
 
-        <!-- Écran Game Over -->
         <div id="gameOverScreen" class="overlayScreen">
             <h1 class="cheh-title">CHEH</h1>
             <p class="score-text">Score final : <span id="finalScore" style="color:#00e5ff;">0</span></p>
@@ -360,9 +357,9 @@
             document.getElementById('gameOverScreen').style.display = "none";
             
             snake = [];
-            // Centrage du serpent au démarrage (X: 520, Y: 800)
+            // Centrage ajusté à la nouvelle hauteur du canvas (Y: 640)
             for(let i=0; i<10; i++){
-                snake.push({x: 520 - (i*gridSize), y: 800});
+                snake.push({x: 520 - (i*gridSize), y: 640});
             }
 
             generateFood();
@@ -551,7 +548,7 @@
             listElement.innerHTML = ""; 
 
             if (top10.length === 0) {
-                listElement.innerHTML = "<li style='text-align:center; color:#888;'>Aucun score</li>";
+                listElement.innerHTML = "<li style='text-align:center; color:#888;'>Aucun score enregistré</li>";
                 return;
             }
 
